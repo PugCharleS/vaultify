@@ -3,6 +3,7 @@ import v1Routes from '../routes/v1/index.js';
 import helmet from 'helmet';
 import csurf from 'csurf';
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
 
 class Server {
     constructor() {
@@ -14,7 +15,10 @@ class Server {
     }
 
     middlewares() {
+        this.app.set('trust proxy', 1); // Confiar en el primer proxy
+
         this.app.use(express.json());
+        this.app.use(cookieParser());
         this.app.use(helmet({
             contentSecurityPolicy: {
                 useDefaults: true,
@@ -36,7 +40,7 @@ class Server {
 
         this.app.use('/api/v1/auth/login', loginLimiter);
 
-        this.app.use(csurf());
+        this.app.use(csurf({ cookie: true }));
     }
 
     routes() {
