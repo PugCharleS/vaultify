@@ -1,7 +1,7 @@
 import express from 'express';
 import v1Routes from '../routes/v1/index.js';
 import helmet from 'helmet';
-// import rateLimit from 'express-rate-limit';
+import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
 
 class Server {
@@ -32,13 +32,13 @@ class Server {
             referrerPolicy: { policy: "no-referrer" },
         }));
 
-        // const loginLimiter = rateLimit({
-        //     windowMs: 15 * 60 * 1000,
-        //     max: 10,
-        //     message: 'Too many login attempts from this IP, please try again after 15 minutes'
-        // });
+        const loginLimiter = rateLimit({
+            windowMs: 15 * 60 * 1000,
+            max: 10,
+            message: 'Too many login attempts from this IP, please try again after 15 minutes'
+        });
 
-        // this.app.use('/api/v1/auth/login', loginLimiter);
+        this.app.use('/api/v1/auth/login', loginLimiter);
     }
 
     routes() {
