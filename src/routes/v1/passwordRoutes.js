@@ -1,9 +1,12 @@
 import { Router } from 'express';
-import { createPassword, getPasswords } from '../../controllers/passwordController.js';
+import { createPassword, getPasswords, deletePassword } from '../../controllers/passwordController.js';
 
 const router = Router();
 
-router.post('/:vault/passwords', createPassword);
-router.get('/:vault/passwords', getPasswords);
+router.get('/:vaultId', getPasswords);
+
+router.post('/:vaultId', createPassword);
+
+router.delete('/:vaultId/:passwordId', deletePassword);
 
 export default router;
