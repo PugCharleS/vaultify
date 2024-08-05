@@ -32,11 +32,11 @@ class Server {
             referrerPolicy: { policy: "no-referrer" },
         }));
 
-        const loginLimiter = rateLimit({
-            windowMs: 15 * 60 * 1000,
-            max: 10,
-            message: 'Too many login attempts from this IP, please try again after 15 minutes'
-        });
+        // const loginLimiter = rateLimit({
+        //     windowMs: 15 * 60 * 1000,
+        //     max: 10,
+        //     message: 'Too many login attempts from this IP, please try again after 15 minutes'
+        // });
 
         this.app.use('/api/v1/auth/login', loginLimiter);
     }
