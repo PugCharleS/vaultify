@@ -12,6 +12,7 @@ class Server {
 
         this.middlewares();
         this.routes();
+        this.errorHandler();
     }
 
     middlewares() {
@@ -31,15 +32,29 @@ class Server {
                 }
             },
             referrerPolicy: { policy: "no-referrer" },
+            frameguard: { action: 'deny' },
+            xssFilter: true,
+            hidePoweredBy: true,
         }));
 
         const loginLimiter = rateLimit({
             windowMs: 15 * 60 * 1000,
             max: 10,
-            message: 'Too many login attempts from this IP, please try again after 15 minutes'
+            message: 'Too many login attempts from this IP, please try again after 15 minutes',
+            standardHeaders: true,
+            legacyHeaders: false,
+        });
+
+        const generalLimiter = rateLimit({
+            windowMs: 15 * 60 * 1000,
+            max: 100,
+            message: 'Too many requests from this IP, please try again after 15 minutes',
+            standardHeaders: true,
+            legacyHeaders: false,
         });
 
         this.app.use('/api/v1/auth/login', loginLimiter);
+        this.app.use(generalLimiter);
     }
 
     routes() {
