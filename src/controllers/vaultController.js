@@ -1,7 +1,7 @@
 import knex from '../db/knex.js';
 
 
-export const createVault = async (req, res) => {
+export const createVault = async (req, res, next) => {
     const { name } = req.body;
     const userId = req.user.id;
     const userEmail = req.user.email;
@@ -19,12 +19,12 @@ export const createVault = async (req, res) => {
 
         res.status(201).json({ vault });
     } catch (error) {
-        res.status(500).json({ message: 'Error creating vault', error });
+        next(error);
     }
 };
 
 
-export const getVaults = async (req, res) => {
+export const getVaults = async (req, res, next) => {
     const userId = req.user.id;
 
     try {
@@ -44,11 +44,11 @@ export const getVaults = async (req, res) => {
 
         res.status(200).json({ vaults: vaultsWithSharedInfo });
     } catch (error) {
-        res.status(500).json({ message: 'Error retrieving vaults', error });
+        next(error);
     }
 };
 
-export const getVaultById = async (req, res) => {
+export const getVaultById = async (req, res, next) => {
     const userId = req.user.id;
     const { vaultId } = req.params;
 
@@ -78,11 +78,11 @@ export const getVaultById = async (req, res) => {
 
         res.status(200).json({ vault: vaultWithSharedInfo });
     } catch (error) {
-        res.status(500).json({ message: 'Error retrieving vault', error });
+        next(error);
     }
 };
 
-export const deleteVault = async (req, res) => {
+export const deleteVault = async (req, res, next) => {
     const { vaultId } = req.params;
     const userId = req.user.id;
 
@@ -102,11 +102,11 @@ export const deleteVault = async (req, res) => {
 
         res.status(200).json({ message: 'Vault and all associated records deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting vault', error });
+        next(error);
     }
 };
 
-export const shareVault = async (req, res) => {
+export const shareVault = async (req, res, next) => {
     const { email, vaultId } = req.params;
     const userId = req.user.id;
 
@@ -128,6 +128,6 @@ export const shareVault = async (req, res) => {
 
         res.status(200).json({ message: 'Vault shared successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error sharing vault', error });
+        next(error);
     }
 };

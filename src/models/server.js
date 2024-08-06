@@ -3,6 +3,7 @@ import v1Routes from '../routes/v1/index.js';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
+import errorHandler from '../middlewares/errorMiddleware.js';
 
 class Server {
     constructor() {
@@ -43,6 +44,10 @@ class Server {
 
     routes() {
         this.app.use('/api/v1', v1Routes);
+    }
+
+    errorHandler() {
+        this.app.use(errorHandler);
     }
 
     start() {

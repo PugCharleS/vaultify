@@ -6,7 +6,7 @@ import { body, validationResult } from 'express-validator';
 export const registerUser = [
     body('email').isEmail().normalizeEmail(),
     body('password').isLength({ min: 5 }).trim().escape(),
-    async (req, res) => {
+    async (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -27,7 +27,7 @@ export const registerUser = [
 
             res.status(201).json({ token, user: { email: user.email, id: user.id, plan: user.plan } });
         } catch (error) {
-            res.status(500).json({ message: 'Error registering user', error });
+            next(error);
         }
     }
 ];
@@ -35,7 +35,7 @@ export const registerUser = [
 export const loginUser = [
     body('email').isEmail().normalizeEmail(),
     body('password').isLength({ min: 5 }).trim().escape(),
-    async (req, res) => {
+    async (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -60,7 +60,7 @@ export const loginUser = [
 
             res.json({ token, email: user.email, id: user.id });
         } catch (error) {
-            res.status(500).json({ message: 'Error logging in', error });
+            next(error);
         }
     }
 ];

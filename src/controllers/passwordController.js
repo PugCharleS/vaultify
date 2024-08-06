@@ -1,7 +1,7 @@
 import knex from '../db/knex.js';
 import { encrypt, decrypt } from '../utils/encryption.js';
 
-export const getPasswords = async (req, res) => {
+export const getPasswords = async (req, res, next) => {
     const { vaultId } = req.params;
     const userId = req.user.id;
 
@@ -35,11 +35,11 @@ export const getPasswords = async (req, res) => {
 
         res.status(200).json({ passwords: decryptedPasswords });
     } catch (error) {
-        res.status(500).json({ message: 'Error retrieving passwords', error });
+        next(error);
     }
 };
 
-export const createPassword = async (req, res) => {
+export const createPassword = async (req, res, next) => {
     const { name, password, username, type } = req.body;
     const { vaultId } = req.params;
     const userId = req.user.id;
@@ -61,13 +61,55 @@ export const createPassword = async (req, res) => {
             added_by: userId
         }).returning(['id', 'name', 'username', 'type', 'created_at', 'added_by']);
 
-        res.status(201).json({ password: newPassword });
+        res.status(201).json({ message: "Password created successfully" });
     } catch (error) {
-        res.status(500).json({ message: 'Error creating password', error });
+        next(error);
     }
 };
 
-export const deletePassword = async (req, res) => {
+export const updatePassword = async (req, res, next) => {
+    const { vaultId, passwordId } = req.params;
+    const { name, password, username, type } = req.body;
+    const userId = req.user.id;
+
+    if (!vaultId || !passwordId || !name || !password || !username || !type) {
+        return res.status(400).json({ message: 'Vault ID, Password ID, name, password, username, and type are required' });
+    }
+
+    try {
+        const vault = await knex('vaults')
+            .where({ id: vaultId })
+            .andWhere(function () {
+                this.where('user_id', userId).orWhereIn('id', function () {
+                    this.select('vault_id').from('vault_users').where('user_id', userId);
+                });
+            })
+            .first();
+
+        if (!vault) {
+            return res.status(403).json({ message: 'Vault does not belong to the user or does not exist' });
+        }
+
+        const encryptedPassword = encrypt(password);
+        const encryptedUsername = encrypt(username);
+
+        const updatedPassword = await knex('passwords')
+            .where({ id: passwordId, vault_id: vaultId })
+            .update({
+                name,
+                password: encryptedPassword,
+                username: encryptedUsername,
+                type
+            })
+            .returning(['id', 'name', 'username', 'type', 'created_at', 'added_by']);
+
+        res.status(200).json({ message: 'Password updated successfully', password: updatedPassword });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deletePassword = async (req, res, next) => {
     const { vaultId, passwordId } = req.params;
     const userId = req.user.id;
 
@@ -95,6 +137,6 @@ export const deletePassword = async (req, res) => {
             res.status(404).json({ message: 'Password not found' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting password', error });
+        next(error);
     }
 };

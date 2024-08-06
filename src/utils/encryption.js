@@ -1,10 +1,10 @@
 import crypto from 'crypto';
 
 const algorithm = 'aes-256-cbc';
-const key = crypto.randomBytes(32);
-const iv = crypto.randomBytes(16);
+const key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex'); // Asegúrate de tener una clave de 32 bytes en hexadecimal en tu variable de entorno
 
 export const encrypt = (text) => {
+    const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
