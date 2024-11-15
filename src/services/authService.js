@@ -6,7 +6,7 @@ class AuthService {
     async registerUser(email, password) {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await userRepository.createUser(email, hashedPassword);
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, email: user.email }, process.env.AUTH_KEY, { expiresIn: '1h' });
         return { token, user };
     }
 
@@ -21,7 +21,7 @@ class AuthService {
             throw new Error('Invalid password');
         }
 
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, email: user.email }, process.env.AUTH_KEY, { expiresIn: '1h' });
         return { token, user };
     }
 }
