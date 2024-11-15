@@ -51,7 +51,7 @@
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/username/vaultify.git
+   git clone https://github.com/PugCharleS/vaultify.git
    ```
 
 2. **Install Dependencies**:
