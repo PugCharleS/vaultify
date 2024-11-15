@@ -1,4 +1,4 @@
-import passwordService from "../services/passwordService";
+import passwordService from "../services/passwordService.js";
 
 export const getPasswords = async (req, res, next) => {
     const { vaultId } = req.params;
