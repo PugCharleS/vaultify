@@ -1,4 +1,5 @@
 import vaultService from '../services/vaultService.js';
+import knex from '../db/knex.js';
 import { Buffer } from 'buffer';
 
 export const createVault = async (req, res, next) => {
