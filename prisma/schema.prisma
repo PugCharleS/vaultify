@@ -1,0 +1,58 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         Int         @id @default(autoincrement())
+  email      String      @unique
+  password   String
+  createdAt  DateTime    @default(now()) @map("created_at")
+  vaults     Vault[]
+  passwords  Password[]
+  vaultUsers VaultUser[]
+
+  @@map("users")
+}
+
+model Vault {
+  id         Int         @id @default(autoincrement())
+  user       User        @relation(fields: [userId], references: [id])
+  userId     Int         @map("user_id")
+  name       String
+  createdAt  DateTime    @default(now()) @map("created_at")
+  createdBy  String?     @map("created_by")
+  passwords  Password[]
+  vaultUsers VaultUser[]
+
+  @@map("vaults")
+}
+
+model Password {
+  id        Int      @id @default(autoincrement())
+  vault     Vault    @relation(fields: [vaultId], references: [id])
+  vaultId   Int      @map("vault_id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @map("user_id")
+  name      String
+  password  String
+  username  String
+  type      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("passwords")
+}
+
+model VaultUser {
+  vault     Vault @relation(fields: [vaultId], references: [id])
+  vaultId   Int   @map("vault_id")
+  user      User  @relation(fields: [userId], references: [id])
+  userId    Int   @map("user_id")
+
+  @@id([vaultId, userId])
+  @@map("vault_users")
+}

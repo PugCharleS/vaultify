@@ -1,39 +1,77 @@
-import knex from '../db/knex.js';
+import prisma from '../db/prisma.js';
 
 class PasswordRepository {
     async getPasswords(vaultId, userId) {
-        return await knex('passwords')
-            .where({ vault_id: vaultId, user_id: userId })
-            .select('id', 'name', 'username', 'type', 'created_at');
+        return await prisma.password.findMany({
+            where: {
+                vaultId,
+                userId,
+            },
+            select: {
+                id: true,
+                name: true,
+                username: true,
+                type: true,
+                createdAt: true,
+            },
+        });
     }
 
     async createPassword(vaultId, userId, name, password, username, type) {
-        return await knex('passwords').insert({
-            vault_id: vaultId,
-            user_id: userId,
-            name,
-            password,
-            username,
-            type,
-        }).returning(['id', 'name', 'username', 'type', 'created_at']);
-    }
-
-    async updatePassword(vaultId, passwordId, userId, name, password, username, type) {
-        return await knex('passwords')
-            .where({ id: passwordId, vault_id: vaultId, user_id: userId })
-            .update({
+        return await prisma.password.create({
+            data: {
+                vaultId,
+                userId,
                 name,
                 password,
                 username,
                 type,
-            })
-            .returning(['id', 'name', 'username', 'type', 'created_at']);
+            },
+            select: {
+                id: true,
+                name: true,
+                username: true,
+                type: true,
+                createdAt: true,
+            },
+        });
+    }
+
+    async updatePassword(vaultId, passwordId, userId, name, password, username, type) {
+        const updated = await prisma.password.updateMany({
+            where: {
+                id: passwordId,
+                vaultId,
+                userId,
+            },
+            data: {
+                name,
+                password,
+                username,
+                type,
+            },
+        });
+        if (!updated.count) return null;
+        return await prisma.password.findUnique({
+            where: { id: passwordId },
+            select: {
+                id: true,
+                name: true,
+                username: true,
+                type: true,
+                createdAt: true,
+            },
+        });
     }
 
     async deletePassword(vaultId, passwordId, userId) {
-        return await knex('passwords')
-            .where({ id: passwordId, vault_id: vaultId, user_id: userId })
-            .del();
+        return await prisma.password.deleteMany({
+            where: {
+                id: passwordId,
+                vaultId,
+                userId,
+            },
+        });
     }
 }
 

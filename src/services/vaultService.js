@@ -32,6 +32,10 @@ class VaultService {
         return await vaultRepository.fetchVaultByIdAndUserId(vaultId, userId);
     }
 
+    async fetchVaultByOwnerId(vaultId, userId) {
+        return await vaultRepository.fetchVaultByIdAndOwnerId(vaultId, userId);
+    }
+
     async deleteVaultAndAssociations(vaultId) {
         return await vaultRepository.deleteVaultAndAssociations(vaultId);
     }

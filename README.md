@@ -3,7 +3,7 @@
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
-![Knex.js](https://img.shields.io/badge/Knex.js-4D64A4?style=for-the-badge&logo=javascript&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=prisma&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 
@@ -24,7 +24,7 @@
 - **Node.js**: Core platform for building the application.
 - **Express.js**: Web framework used to structure the APIs and routes.
 - **PostgreSQL**: Database to store all application data.
-- **Knex.js**: SQL query builder for interacting with the PostgreSQL database.
+- **Prisma ORM**: Type-safe ORM for interacting with the PostgreSQL database.
 - **bcryptjs**: Library for hashing passwords.
 - **jsonwebtoken**: For creating and verifying JWTs.
 - **crypto**: Node.js built-in library for encryption and decryption.
@@ -63,21 +63,16 @@
 3. **Configure Environment Variables**:
    Create a `.env` file in the root directory and specify the necessary environment variables:
    ```dotenv
-   PG_HOST=your_db_host
-   PG_PORT=5432
-   PG_USER=your_db_user
-   PG_PASSWORD=your_db_password
-   PG_DATABASE=your_database_name
+   DATABASE_URL="postgresql://user:password@host:5432/database"
    AUTH_KEY=your_auth_secret
    SESSION_KEY=your_session_key
    ENCRYPTION_KEY=your_encryption_key
    ```
 
-4. **Run Migrations and Seeds**:
-   Make sure to set up the database schema and seed some initial data.
+4. **Run Migrations**:
+   Initialize the database schema using Prisma.
    ```bash
-   npx knex migrate:latest
-   npx knex seed:run
+   npx prisma migrate deploy
    ```
 
 5. **Start the Server**:

@@ -56,7 +56,7 @@ export const deleteVault = async (req, res, next) => {
     const userId = req.user.id;
 
     try {
-        const vault = await knex('vaults').where({ id: vaultId, user_id: userId }).first();
+        const vault = await vaultService.fetchVaultByOwnerId(vaultId, userId);
         if (!vault) {
             return res.status(403).json({ data: { error: 'Vault does not belong to the user' } });
         }
@@ -74,7 +74,7 @@ export const shareVault = async (req, res, next) => {
     const userId = req.user.id;
 
     try {
-        const vault = await knex('vaults').where({ id: vaultId, user_id: userId }).first();
+        const vault = await vaultService.fetchVaultByOwnerId(vaultId, userId);
         if (!vault) {
             return res.status(403).json({ data: { error: 'Vault does not belong to the user' } });
         }
