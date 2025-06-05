@@ -1,34 +1,22 @@
-class VaultRepository {
+import BaseRepository from './baseRepository.js';
+
+class VaultRepository extends BaseRepository {
     constructor(prisma) {
-        this.prisma = prisma;
+        super(prisma, 'vault');
     }
 
     async insertVault(userId, name, userEmail) {
-        return await this.prisma.vault.create({
-            data: {
-                userId,
-                name,
-                createdBy: userEmail,
-            },
-            select: {
-                id: true,
-                name: true,
-                createdAt: true,
-                createdBy: true,
-            },
-        });
+        return await this.create(
+            { userId, name, createdBy: userEmail },
+            { id: true, name: true, createdAt: true, createdBy: true }
+        );
     }
 
     async fetchVaultsByUserId(userId) {
-        return await this.prisma.vault.findMany({
-            where: { userId },
-            select: {
-                id: true,
-                name: true,
-                createdAt: true,
-                createdBy: true,
-            },
-        });
+        return await this.findMany(
+            { userId },
+            { id: true, name: true, createdAt: true, createdBy: true }
+        );
     }
 
     async fetchSharedUsersByVaultId(vaultId) {
@@ -44,24 +32,14 @@ class VaultRepository {
     }
 
     async fetchVaultByIdAndUserId(vaultId, userId) {
-        return await this.prisma.vault.findFirst({
-            where: {
-                id: vaultId,
-                OR: [
-                    { userId },
-                    { vaultUsers: { some: { userId } } },
-                ],
-            },
+        return await this.findFirst({
+            id: vaultId,
+            OR: [{ userId }, { vaultUsers: { some: { userId } } }],
         });
     }
 
     async fetchVaultByIdAndOwnerId(vaultId, userId) {
-        return await this.prisma.vault.findFirst({
-            where: {
-                id: vaultId,
-                userId,
-            },
-        });
+        return await this.findFirst({ id: vaultId, userId });
     }
 
     async deleteVaultAndAssociations(vaultId) {
@@ -78,10 +56,7 @@ class VaultRepository {
 
     async insertVaultUser(vaultId, userId) {
         return await this.prisma.vaultUser.create({
-            data: {
-                vaultId,
-                userId,
-            },
+            data: { vaultId, userId },
         });
     }
 
