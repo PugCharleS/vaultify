@@ -1,20 +1,23 @@
-import knex from '../db/knex.js';
+import prisma from '../db/prisma.js';
 
 class UserRepository {
     async createUser(email, hashedPassword) {
-        const [user] = await knex('users').insert({
-            email,
-            password: hashedPassword,
-            created_at: knex.fn.now(),
-        }).returning(['id', 'email']);
-        return user;
+        return await prisma.user.create({
+            data: {
+                email,
+                password: hashedPassword,
+            },
+            select: {
+                id: true,
+                email: true,
+            },
+        });
     }
 
     async findUserByEmail(email) {
-        const user = await knex('users')
-            .where({ email })
-            .first();
-        return user;
+        return await prisma.user.findUnique({
+            where: { email },
+        });
     }
 }
 
