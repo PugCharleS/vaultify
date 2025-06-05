@@ -87,6 +87,11 @@
 
 ## API Documentation
 
+Swagger-based documentation is available once the server is running. Visit
+`http://localhost:3000/api-docs` to view and interact with the API specification.
+The OpenAPI spec is generated from inline comments in the controller files
+using **swagger-jsdoc**.
+
 ### Authentication
 
 - **POST /auth/register**: Register a new user.

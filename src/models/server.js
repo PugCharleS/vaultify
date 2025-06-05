@@ -4,11 +4,28 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
 import errorHandler from '../middlewares/errorMiddleware.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
 
 class Server {
     constructor() {
         this.app = express();
         this.port = process.env.PORT || 3000;
+
+        const swaggerOptions = {
+            definition: {
+                openapi: '3.0.0',
+                info: {
+                    title: 'Vaultify API',
+                    version: '1.0.0',
+                    description: 'API documentation for Vaultify password manager.'
+                },
+                servers: [{ url: '/api/v1' }]
+            },
+            apis: ['./src/controllers/*.js']
+        };
+
+        this.swaggerSpec = swaggerJSDoc(swaggerOptions);
 
         this.middlewares();
         this.routes();
@@ -57,6 +74,7 @@ class Server {
     }
 
     routes() {
+        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(this.swaggerSpec));
         this.app.use('/api/v1', v1Routes);
     }
 

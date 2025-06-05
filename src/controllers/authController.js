@@ -1,6 +1,31 @@
 import { body, validationResult } from 'express-validator';
 import authService from '../services/authService.js';
 
+/**
+ * @openapi
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '201':
+ *         description: User registered
+ */
 export const registerUser = [
     body('email').isEmail().normalizeEmail(),
     body('password').isLength({ min: 5 }).trim().escape(),
@@ -21,6 +46,31 @@ export const registerUser = [
     }
 ];
 
+/**
+ * @openapi
+ * /auth/login:
+ *   post:
+ *     summary: Login and receive a JWT
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Login successful
+ */
 export const loginUser = [
     body('email').isEmail().normalizeEmail(),
     body('password').isLength({ min: 5 }).trim().escape(),
