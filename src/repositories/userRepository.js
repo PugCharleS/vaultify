@@ -1,25 +1,19 @@
-class UserRepository {
+import BaseRepository from './baseRepository.js';
+
+class UserRepository extends BaseRepository {
     constructor(prisma) {
-        this.prisma = prisma;
+        super(prisma, 'user');
     }
 
     async createUser(email, hashedPassword) {
-        return await this.prisma.user.create({
-            data: {
-                email,
-                password: hashedPassword,
-            },
-            select: {
-                id: true,
-                email: true,
-            },
-        });
+        return await this.create(
+            { email, password: hashedPassword },
+            { id: true, email: true }
+        );
     }
 
     async findUserByEmail(email) {
-        return await this.prisma.user.findUnique({
-            where: { email },
-        });
+        return await this.findUnique({ email });
     }
 }
 
