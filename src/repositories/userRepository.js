@@ -1,8 +1,10 @@
-import prisma from '../db/prisma.js';
-
 class UserRepository {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+
     async createUser(email, hashedPassword) {
-        return await prisma.user.create({
+        return await this.prisma.user.create({
             data: {
                 email,
                 password: hashedPassword,
@@ -15,10 +17,10 @@ class UserRepository {
     }
 
     async findUserByEmail(email) {
-        return await prisma.user.findUnique({
+        return await this.prisma.user.findUnique({
             where: { email },
         });
     }
 }
 
-export default new UserRepository();
+export default UserRepository;
