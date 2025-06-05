@@ -1,5 +1,22 @@
 import passwordService from "../services/passwordService.js";
 
+/**
+ * @openapi
+ * /passwords/{vaultId}:
+ *   get:
+ *     summary: Retrieve passwords for a vault
+ *     tags:
+ *       - Passwords
+ *     parameters:
+ *       - in: path
+ *         name: vaultId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: List of passwords
+ */
 export const getPasswords = async (req, res, next) => {
     const { vaultId } = req.params;
     const userId = req.user.id;
@@ -12,6 +29,38 @@ export const getPasswords = async (req, res, next) => {
     }
 };
 
+/**
+ * @openapi
+ * /passwords/{vaultId}:
+ *   post:
+ *     summary: Add a password to a vault
+ *     tags:
+ *       - Passwords
+ *     parameters:
+ *       - in: path
+ *         name: vaultId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               username:
+ *                 type: string
+ *               type:
+ *                 type: string
+ *     responses:
+ *       '201':
+ *         description: Password created
+ */
 export const createPassword = async (req, res, next) => {
     const { name, password, username, type } = req.body;
     const { vaultId } = req.params;
@@ -29,6 +78,43 @@ export const createPassword = async (req, res, next) => {
     }
 };
 
+/**
+ * @openapi
+ * /passwords/{vaultId}/{passwordId}:
+ *   put:
+ *     summary: Update a password
+ *     tags:
+ *       - Passwords
+ *     parameters:
+ *       - in: path
+ *         name: vaultId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: passwordId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               username:
+ *                 type: string
+ *               type:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Password updated
+ */
 export const updatePassword = async (req, res, next) => {
     const { vaultId, passwordId } = req.params;
     const { name, password, username, type } = req.body;
@@ -46,6 +132,28 @@ export const updatePassword = async (req, res, next) => {
     }
 };
 
+/**
+ * @openapi
+ * /passwords/{vaultId}/{passwordId}:
+ *   delete:
+ *     summary: Delete a password
+ *     tags:
+ *       - Passwords
+ *     parameters:
+ *       - in: path
+ *         name: vaultId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: passwordId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Password deleted
+ */
 export const deletePassword = async (req, res, next) => {
     const { vaultId, passwordId } = req.params;
     const userId = req.user.id;

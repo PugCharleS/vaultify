@@ -1,6 +1,26 @@
 import vaultService from '../services/vaultService.js';
 import { Buffer } from 'buffer';
 
+/**
+ * @openapi
+ * /vaults:
+ *   post:
+ *     summary: Create a new vault
+ *     tags:
+ *       - Vaults
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *     responses:
+ *       '201':
+ *         description: Vault created
+ */
 export const createVault = async (req, res, next) => {
     const { name } = req.body;
     const userId = req.user.id;
@@ -25,6 +45,17 @@ export const createVault = async (req, res, next) => {
     }
 };
 
+/**
+ * @openapi
+ * /vaults:
+ *   get:
+ *     summary: Retrieve all vaults
+ *     tags:
+ *       - Vaults
+ *     responses:
+ *       '200':
+ *         description: List of vaults
+ */
 export const getVaults = async (req, res, next) => {
     try {
         const userId = req.user.id;
@@ -35,6 +66,23 @@ export const getVaults = async (req, res, next) => {
     }
 };
 
+/**
+ * @openapi
+ * /vaults/{vaultId}:
+ *   get:
+ *     summary: Get a vault by ID
+ *     tags:
+ *       - Vaults
+ *     parameters:
+ *       - in: path
+ *         name: vaultId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Vault data
+ */
 export const getVaultById = async (req, res, next) => {
     try {
         const userId = req.user.id;
@@ -51,6 +99,23 @@ export const getVaultById = async (req, res, next) => {
     }
 };
 
+/**
+ * @openapi
+ * /vaults/{vaultId}:
+ *   delete:
+ *     summary: Delete a vault
+ *     tags:
+ *       - Vaults
+ *     parameters:
+ *       - in: path
+ *         name: vaultId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Vault deleted
+ */
 export const deleteVault = async (req, res, next) => {
     const { vaultId } = req.params;
     const userId = req.user.id;
@@ -69,6 +134,28 @@ export const deleteVault = async (req, res, next) => {
     }
 };
 
+/**
+ * @openapi
+ * /vaults/share/{email}/vault/{vaultId}:
+ *   post:
+ *     summary: Share a vault with another user
+ *     tags:
+ *       - Vaults
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: vaultId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Vault shared
+ */
 export const shareVault = async (req, res, next) => {
     const { email, vaultId } = req.params;
     const userId = req.user.id;
@@ -92,6 +179,23 @@ export const shareVault = async (req, res, next) => {
     }
 };
 
+/**
+ * @openapi
+ * /vaults/{vaultId}/env:
+ *   get:
+ *     summary: Export vault passwords to an env file
+ *     tags:
+ *       - Vaults
+ *     parameters:
+ *       - in: path
+ *         name: vaultId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: env file
+ */
 export const generateEnvFile = async (req, res, next) => {
     const { vaultId } = req.params;
     const userId = req.user.id;
