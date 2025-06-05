@@ -1,8 +1,9 @@
-import prisma from '../db/prisma.js';
-
 class PasswordRepository {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
     async getPasswords(vaultId, userId) {
-        return await prisma.password.findMany({
+        return await this.prisma.password.findMany({
             where: {
                 vaultId,
                 userId,
@@ -18,7 +19,7 @@ class PasswordRepository {
     }
 
     async createPassword(vaultId, userId, name, password, username, type) {
-        return await prisma.password.create({
+        return await this.prisma.password.create({
             data: {
                 vaultId,
                 userId,
@@ -38,7 +39,7 @@ class PasswordRepository {
     }
 
     async updatePassword(vaultId, passwordId, userId, name, password, username, type) {
-        const updated = await prisma.password.updateMany({
+        const updated = await this.prisma.password.updateMany({
             where: {
                 id: passwordId,
                 vaultId,
@@ -52,7 +53,7 @@ class PasswordRepository {
             },
         });
         if (!updated.count) return null;
-        return await prisma.password.findUnique({
+        return await this.prisma.password.findUnique({
             where: { id: passwordId },
             select: {
                 id: true,
@@ -65,7 +66,7 @@ class PasswordRepository {
     }
 
     async deletePassword(vaultId, passwordId, userId) {
-        return await prisma.password.deleteMany({
+        return await this.prisma.password.deleteMany({
             where: {
                 id: passwordId,
                 vaultId,
@@ -75,4 +76,4 @@ class PasswordRepository {
     }
 }
 
-export default new PasswordRepository();
+export default PasswordRepository;

@@ -1,8 +1,10 @@
-import prisma from '../db/prisma.js';
-
 class VaultRepository {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+
     async insertVault(userId, name, userEmail) {
-        return await prisma.vault.create({
+        return await this.prisma.vault.create({
             data: {
                 userId,
                 name,
@@ -18,7 +20,7 @@ class VaultRepository {
     }
 
     async fetchVaultsByUserId(userId) {
-        return await prisma.vault.findMany({
+        return await this.prisma.vault.findMany({
             where: { userId },
             select: {
                 id: true,
@@ -30,7 +32,7 @@ class VaultRepository {
     }
 
     async fetchSharedUsersByVaultId(vaultId) {
-        const records = await prisma.vaultUser.findMany({
+        const records = await this.prisma.vaultUser.findMany({
             where: { vaultId },
             include: {
                 user: {
@@ -42,7 +44,7 @@ class VaultRepository {
     }
 
     async fetchVaultByIdAndUserId(vaultId, userId) {
-        return await prisma.vault.findFirst({
+        return await this.prisma.vault.findFirst({
             where: {
                 id: vaultId,
                 OR: [
@@ -54,7 +56,7 @@ class VaultRepository {
     }
 
     async fetchVaultByIdAndOwnerId(vaultId, userId) {
-        return await prisma.vault.findFirst({
+        return await this.prisma.vault.findFirst({
             where: {
                 id: vaultId,
                 userId,
@@ -63,19 +65,19 @@ class VaultRepository {
     }
 
     async deleteVaultAndAssociations(vaultId) {
-        return await prisma.$transaction([
-            prisma.password.deleteMany({ where: { vaultId } }),
-            prisma.vaultUser.deleteMany({ where: { vaultId } }),
-            prisma.vault.delete({ where: { id: vaultId } }),
+        return await this.prisma.$transaction([
+            this.prisma.password.deleteMany({ where: { vaultId } }),
+            this.prisma.vaultUser.deleteMany({ where: { vaultId } }),
+            this.prisma.vault.delete({ where: { id: vaultId } }),
         ]);
     }
 
     async fetchUserByEmail(email) {
-        return await prisma.user.findUnique({ where: { email } });
+        return await this.prisma.user.findUnique({ where: { email } });
     }
 
     async insertVaultUser(vaultId, userId) {
-        return await prisma.vaultUser.create({
+        return await this.prisma.vaultUser.create({
             data: {
                 vaultId,
                 userId,
@@ -84,11 +86,11 @@ class VaultRepository {
     }
 
     async fetchPasswordsByVaultId(vaultId) {
-        return await prisma.password.findMany({
+        return await this.prisma.password.findMany({
             where: { vaultId },
             select: { name: true, password: true },
         });
     }
 }
 
-export default new VaultRepository();
+export default VaultRepository;
